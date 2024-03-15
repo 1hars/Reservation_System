@@ -58,6 +58,7 @@ public class HotelReservationSystem {
         }
     }
     public static void reserveRoom(Connection connection, Scanner scn){
+        String query = "Insert into reservations(guest_name, room_number,contact_number) Values (?,?,?)";
         try{
             System.out.println("Enter guest Name: ");
             String guestname = scn.next();
@@ -66,10 +67,11 @@ public class HotelReservationSystem {
             int roomNumber = scn.nextInt();
             System.out.println("Enter contact number: ");
             String contactNumber = scn.next();
-            String sql = "Insert into reservations(guest_name, room_number,contact_number) " +
-                    "values (' " + guestname + "', " + roomNumber + ", ' " + contactNumber + "')";
-             try(Statement statement = connection.createStatement()){
-                 int effectrow = statement.executeUpdate(sql);
+             try(PreparedStatement statement = connection.prepareStatement(query)){
+                 statement.setString(1,guestname);
+                 statement.setInt(2,roomNumber);
+                 statement.setString(3,contactNumber);
+                 int effectrow = statement.executeUpdate();
                  if(effectrow > 0){
                      System.out.println("Reservation Successfully");
                  }else{
